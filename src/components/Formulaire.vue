@@ -1,3 +1,4 @@
+
 <template>
 <b-container>
     <label for="pet-select">Sélection du quartier:</label><br>
@@ -11,10 +12,10 @@
   <td></td>
   </tr>-->
  <!--<label for="n_days">Probabilité de transmission <b-icon  v-b-modal.transmi icon="exclamation-circle-fill" variant="info"></b-icon> : </label>
-                  <b-form-input id="ptransmi" v-model="utilisateur.probabilité" type="range" min="0.005" max="0.9" step="0.005"></b-form-input>-->
+                  <b-form-input id="ptransmi" v-model="utilisateur.probability" type="range" min="0.005" max="0.9" step="0.005"></b-form-input>-->
     <br><br>
     <label>Probabilité de transmission</label>
-                  <select v-model="utilisateur.probabilité">
+                  <select v-model="utilisateur.probability">
                   // eslint-disable-next-line
                   <option v-for="utilisateur in utilisateurs" v-bind:key="utilisateur"> {{utilisateur}} </option>
                   </select>
@@ -57,7 +58,7 @@
 
    <!-- {{this.utilisateur}} -->
 
-   <p>Probabilité de transmission : {{utilisateur.probabilité}}</p>
+   <p>Probabilité de transmission : {{utilisateur.probability}}</p>
 
   <p>Global infected : {{this.global}}</p>
 
@@ -66,20 +67,23 @@
 
 <script>
 import axios from 'axios'
+import { ref } from 'vue'
 
 /* eslint-disable */
 export default {
   name: 'MyFormulaire',
+  
   data () {
     return {
          utilisateurs: [],
 
       utilisateur: {
-        probabilité: ""
+        probability: ""
+        
       },
      
 
-      probabilités:
+      probabilitys:
       [	
 '0.05',
 '0.05641025641025641',
@@ -124,6 +128,7 @@ export default {
     }
     
   },
+  /* Vue.set(utilisateur, probability), */
   mounted(){
     axios.get('http://localhost:5000/api/posts')
     .then((response) => {
@@ -140,6 +145,7 @@ export default {
     .then((response) => {
       console.log(response.data);
       this.global = response.data;
+      
      
 
     })
@@ -148,9 +154,18 @@ export default {
     })
     
   },
-  methods: {
+methods: {
     enregistrer () {
+      axios.post('http://localhost:5000/api/posts', {
+        probability: parseFloat(this.utilisateur.probability),
+        probability: ref(parseFloat(this.utilisateur.probability)), 
+        
+      })
+
       console.log(this.utilisateur)
+
+      this.utilisateur = {}
+     
 
     }
   }
